@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Toolbar from './Toolbar';
 
 const DrawingPanel = () => {
   const canvasRef = useRef(null);
@@ -85,20 +86,11 @@ const DrawingPanel = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px' }}>
-        <div>
-          <button onClick={() => handleColorChange('black')}>Black</button>
-          <button onClick={() => handleColorChange('red')}>Red</button>
-        </div>
-        <div>
-          <button onClick={() => handleWidthChange(2)}>Thin</button>
-          <button onClick={() => handleWidthChange(5)}>Medium</button>
-          <button onClick={() => handleWidthChange(8)}>Thick</button>
-        </div>
-        <div>
-          <button onClick={handleClearCanvas}>Clear</button>
-        </div>
-      </div>
+      <Toolbar
+        handleColorChange={handleColorChange}
+        handleWidthChange={handleWidthChange}
+        handleClearCanvas={handleClearCanvas}
+      />
       <canvas
         ref={canvasRef}
         style={{ flex: 1, border: '1px solid black' }}
