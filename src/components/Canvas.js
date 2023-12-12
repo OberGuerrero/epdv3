@@ -1,105 +1,66 @@
 import React, { useState, useRef, useEffect } from 'react';
-import Toolbar from './Toolbar';
+import * as THREE from 'three';
+import LispCodePopup from './LispCodePopup';
 
-const DrawingPanel = () => {
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [lines, setLines] = useState([]);
-  const [nodes, setNodes] = useState([]);
-  const [lineColor, setLineColor] = useState('black');
-  const [lineWidth, setLineWidth] = useState(2);
+const App = () => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [currentLispCode, setCurrentLispCode] = useState('');
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-
-    const drawLines = () => {
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-      ctx.strokeStyle = lineColor;
-      ctx.lineWidth = lineWidth;
-      ctx.lineCap = 'round';
-      lines.forEach((line) => {
-        ctx.beginPath();
-        ctx.moveTo(line.startX, line.startY);
-        ctx.lineTo(line.endX, line.endY);
-        ctx.stroke();
-      });
-    };
-
-    drawLines();
-  }, [lines, lineColor, lineWidth]);
-
-  const handleMouseDown = (e) => {
-    setIsDrawing(true);
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    setNodes([...nodes, { x, y }]);
+  const handlePopupSubmit = (code) => {
+    setCurrentLispCode(code);
+    setShowPopup(false);
   };
-
-  const handleMouseMove = (e) => {
-    if (!isDrawing) return;
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const updatedLines = [...lines];
-    const lastNode = nodes[nodes.length - 1];
-    updatedLines.push({ startX: lastNode.x, startY: lastNode.y, endX: x, endY: y });
-    setLines(updatedLines);
-  };
-
-  const handleMouseUp = () => {
-    setIsDrawing(false);
-  };
-
-  const handleColorChange = (color) => {
-    setLineColor(color);
-  };
-
-  const handleWidthChange = (width) => {
-    setLineWidth(width);
-  };
-
-  const handleClearCanvas = () => {
-    setLines([]);
-    setNodes([]);
-  };
-
-  useEffect(() => {
-    const handleResize = () => {
-      const canvas = canvasRef.current;
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize(); // Set initial canvas size on component mount
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <Toolbar
-        handleColorChange={handleColorChange}
-        handleWidthChange={handleWidthChange}
-        handleClearCanvas={handleClearCanvas}
-      />
-      <canvas
-        ref={canvasRef}
-        style={{ flex: 1, border: '1px solid black' }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-      />
+    <div className="App">
+      <h1>Tu Aplicación</h1>
+      <button onClick={() => setShowPopup(true)}>Ingresar código LISP</button>
+      {showPopup && (
+        <LispCodePopup onSubmit={handlePopupSubmit} />
+      )}
     </div>
   );
 };
 
-export default DrawingPanel;
+const ThreeScene = () => {
+  const sceneRef = useRef(null);
+  useEffect(() => {
+    // Crear la escena
+    const scene = new THREE.Scene();
+    
+    // Crear la cámara
+    const camera = new THREE.PerspectiveCamera(
+      75, // Campo de visión
+      window.innerWidth / window.innerHeight, // Proporción de aspecto
+      0.1, // Distancia cercana
+      1000 // Distancia lejana
+    );
+    
+    // Crear el renderizador
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    
+    // Agregar el renderizador al DOM
+    const sceneContainer = sceneRef.current;
+    sceneContainer.appendChild(renderer.domElement);
+    
+    // Actualizar la cámara al cambiar el tamaño de la ventana
+    window.addEventListener('resize', () => {
+      const { innerWidth, innerHeight } = window;
+      renderer.setSize(innerWidth, innerHeight);
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+    });
+    
+    // Actualizar la escena
+    const animate = () => {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    };
+    animate();
+  }, []);
+
+  return <div ref={sceneRef} />;
+};
+
+export default ThreeScene;
