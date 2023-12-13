@@ -7,7 +7,7 @@ function Home() {
   const [showPopup, setShowPopup] = useState(false);
 
   const handleGenerateDesignClick = () => {
-    setShowPopup(true);
+    setShowPopup(!showPopup);
   };
 
   const handlePopupSubmit = (code) => {
@@ -20,7 +20,8 @@ function Home() {
           <img src='https://electrimex.com/assets/img/imgIntro.jpg' alt="Encabezado" className="header-image" />
           <h1 className='title'>Plataforma Principal</h1>
         </nav>
-        <Link to="/canvas" className='button' onClick={handleGenerateDesignClick}>Generar Diseño</Link>
+
+        <Link to="/lisp" className='button' onClick={handleGenerateDesignClick}>Generar Diseño</Link>
         <Link to="/canvas" className='button'>Importar Diseño</Link>
         <div className='container'>
           <hr className='separator'/>
@@ -29,6 +30,7 @@ function Home() {
           <h2 className='subtitle'>Diseños Agregados Recientemente</h2>
           <Link to="/canvas" className='button'>Agregar Nuevo Diseño</Link>
         </footer>
+        {showPopup && <LispCodePopup onSubmit={handlePopupSubmit} />}
       </div>
       );
 
