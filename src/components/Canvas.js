@@ -18,15 +18,18 @@ const App = () => {
       {showPopup && (
         <LispCodePopup onSubmit={handlePopupSubmit} />
       )}
+      <ThreeScene lispCode={currentLispCode} />
     </div>
   );
 };
 
-const ThreeScene = () => {
+const ThreeScene = ({ lispCode }) => {
   const sceneRef = useRef(null);
   useEffect(() => {
     // Crear la escena
     const scene = new THREE.Scene();
+
+    console.log('Código LISP recibido:', lispCode);
     
     // Crear la cámara
     const camera = new THREE.PerspectiveCamera(
@@ -63,4 +66,4 @@ const ThreeScene = () => {
   return <div ref={sceneRef} />;
 };
 
-export default ThreeScene;
+export default App;
