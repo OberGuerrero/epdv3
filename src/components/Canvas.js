@@ -13,7 +13,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Tu Aplicación</h1>
+      <h1>Energy Pole Designer - Lector código LISP</h1>
       <button onClick={() => setShowPopup(true)}>Ingresar código LISP</button>
       {showPopup && (
         <LispCodePopup onSubmit={handlePopupSubmit} />
@@ -26,28 +26,34 @@ const App = () => {
 const ThreeScene = ({ lispCode }) => {
   const sceneRef = useRef(null);
   useEffect(() => {
-    // Crear la escena
     const scene = new THREE.Scene();
 
     console.log('Código LISP recibido:', lispCode);
     
-    // Crear la cámara
     const camera = new THREE.PerspectiveCamera(
-      75, // Campo de visión
-      window.innerWidth / window.innerHeight, // Proporción de aspecto
-      0.1, // Distancia cercana
-      1000 // Distancia lejana
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
     );
     
-    // Crear el renderizador
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const modifySceneBasedOnLispCode = (code) => {
+      const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      const geometry = new THREE.BoxGeometry(1, 1, 1);
+      const cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+    };
+
+    if (lispCode) {
+      modifySceneBasedOnLispCode(lispCode);
+    }
     
-    // Agregar el renderizador al DOM
     const sceneContainer = sceneRef.current;
     sceneContainer.appendChild(renderer.domElement);
     
-    // Actualizar la cámara al cambiar el tamaño de la ventana
     window.addEventListener('resize', () => {
       const { innerWidth, innerHeight } = window;
       renderer.setSize(innerWidth, innerHeight);
@@ -55,15 +61,14 @@ const ThreeScene = ({ lispCode }) => {
       camera.updateProjectionMatrix();
     });
     
-    // Actualizar la escena
     const animate = () => {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
     };
     animate();
-  }, []);
+  }, [lispCode]);
 
   return <div ref={sceneRef} />;
 };
 
-export default App;
+export default ThreeScene;
