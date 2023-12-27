@@ -10,6 +10,7 @@ function App() {
 
   const handlePopupSubmit = (code) => {
     setCurrentLispCode(code);
+    console.log('Código LISP recibido:', code)
   };
 
   return (
