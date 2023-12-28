@@ -2,6 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import LispCodePopup from './LispCodePopup';
 
+function Canvas(props) {
+  console.log('Código LISP recibido en Canvas:', props.currentLispCode);
+
 const App = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [currentLispCode, setCurrentLispCode] = useState('');
@@ -11,17 +14,20 @@ const App = () => {
     setShowPopup(false);
   };
 
+  console.log('Valor actual de currentLispCode:', currentLispCode);
+
   return (
     <div className="App">
-      <h1>Energy Pole Designer - Lector código LISP</h1>
-      <button onClick={() => setShowPopup(true)}>Ingresar código LISP</button>
+      {/* <h1>Energy Pole Designer - Lector código LISP</h1>
+      <button onClick={() => setShowPopup(true)}>Ingresar código LISP</button> */}
       {showPopup && (
         <LispCodePopup onSubmit={handlePopupSubmit} />
       )}
-      <ThreeScene lispCode={currentLispCode} />
+      <ThreeScene lispCode={currentLispCode} /> 
     </div>
   );
 };
+}
 
 const ThreeScene = ({ lispCode }) => {
   const sceneRef = useRef(null);
@@ -79,13 +85,7 @@ const ThreeScene = ({ lispCode }) => {
   useEffect(() => {
     if (scene) {
     console.log('Código LISP recibido:', lispCode);
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     
@@ -110,4 +110,4 @@ const ThreeScene = ({ lispCode }) => {
   return <div ref={sceneRef} />;
 };
 
-export default ThreeScene;
+export default Canvas;

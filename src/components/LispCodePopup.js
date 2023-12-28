@@ -13,12 +13,18 @@ const LispCodePopup = ({ onSubmit }) => {
     }
 
     try {
-      onSubmit(code);
+      const tokens = tokenize(code);
+      onSubmit(tokens);
       navigate('/canvas');
     } catch (err) {
       setError('Hubo un error al procesar el código');
       console.error(err);
     }
+  };
+
+  const tokenize = (code) => {
+    const regex = /\(|\)|"(?:\\.|[^"\\])*"|;.*|[^()\s]+/g;
+    return code.match(regex);
   };
 
   return (
