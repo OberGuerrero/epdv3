@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LispCodePopup = ({ onSubmit }) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     if (code.trim() === '') {
@@ -12,6 +14,7 @@ const LispCodePopup = ({ onSubmit }) => {
 
     try {
       onSubmit(code);
+      navigate('/canvas');
     } catch (err) {
       setError('Hubo un error al procesar el código');
       console.error(err);
