@@ -18,11 +18,7 @@ const App = () => {
 
   return (
     <div className="App">
-      {/* <h1>Energy Pole Designer - Lector código LISP</h1>
-      <button onClick={() => setShowPopup(true)}>Ingresar código LISP</button> */}
-      {showPopup && (
         <LispCodePopup onSubmit={handlePopupSubmit} />
-      )}
       <ThreeScene lispCode={currentLispCode} /> 
     </div>
   );
